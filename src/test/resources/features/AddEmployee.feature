@@ -26,8 +26,29 @@ Feature: Adding Employee to HRMS
     Then error message should be displayed
 
 
-    @noFirstName
-    Scenario: Error message is shown when admin leaves the First Name field empty
-      And user enters lastname and and leaves firstname field empty
-      And user clicks on Save button
-      Then error message should be displayed
+  @noFirstName
+  Scenario: Error message is shown when admin leaves the First Name field empty
+    And user enters lastname and and leaves firstname field empty
+    And user clicks on Save button
+    Then error message should be displayed
+
+  @missingName
+  Scenario Outline: Error message when first name or last name is missing
+    When user enters incomplete "<firstName>" "<lastName>"
+    And user clicks on Save button
+    Then error message "<errorMessage>" is shown on "<missingField>"
+    Examples:
+      | firstName | lastName | errorMessage |missingField|
+      |           | Jones    | Required     |firstName   |
+      | Kevin     |          | Required     |lastName    |
+
+  @existingID
+  Scenario: Error message is shown when adding employee with existing ID
+    When user enters firstname and lastname
+    And user enters existing employee ID "53950776"
+    And user clicks on Save button
+    Then error message "Failed To Save: Employee Id Exists" should be displayed
+
+
+
+

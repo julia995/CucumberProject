@@ -7,10 +7,18 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import utils.CommonMethods;
 import utils.ConfigReader;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import java.io.IOException;
 
 public class AddEmployeeSteps extends CommonMethods {
+
+    public String firstName;
+    public String lastName;
+
+
     @When("user enters valid username and password")
     public void user_enters_valid_username_and_password() throws IOException {
         sendText(ConfigReader.read("userName"),loginPage.usernameField);
@@ -78,6 +86,26 @@ public class AddEmployeeSteps extends CommonMethods {
     public void user_enters_lastname_and_and_leaves_firstname_field_empty() {
         sendText("Bond", addEmployeePage.lastnameLocator);
     }
+
+    @When("user enters incomplete {string} {string}")
+    public void user_enters_incomplete(String firstName, String lastName) {
+        sendText(firstName, addEmployeePage.firstnameLocator);
+        sendText(lastName, addEmployeePage.lastnameLocator);
+    }
+    @Then("error message {string} is shown on {string}")
+    public void error_message_is_shown_on(String errorMessage, String missingField) {
+        Assert.assertEquals(errorMessage, addEmployeePage.addEmployeeErrorMessage(missingField));
+    }
+
+    @When("user enters existing employee ID {string}")
+    public void user_enters_existing_employee_id(String eID) {
+        sendText(eID, addEmployeePage.employeeID);
+    }
+    @Then("error message {string} should be displayed")
+    public void error_message_should_be_displayed(String errorMSG) {
+        Assert.assertTrue(addEmployeePage.existingEmpIdErrorMsg.getText().contains(errorMSG));
+    }
+
 
 
 }
